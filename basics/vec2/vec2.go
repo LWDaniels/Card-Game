@@ -7,6 +7,10 @@ type Vec2 struct {
 	X, Y float32
 }
 
+func NewVec2(x float32, y float32) Vec2 {
+	return Vec2{x, y}
+}
+
 func (v Vec2) F64() (x float64, y float64) {
 	return float64(v.X), float64(v.Y)
 }
@@ -64,6 +68,10 @@ func Difference(a, b Vec2) Vec2 {
 // a / b; no checking for div by 0
 func Quotient(a, b Vec2) Vec2 {
 	return Vec2{a.X / b.X, a.Y / b.Y}
+}
+
+func Dot(a, b Vec2) float32 {
+	return a.X*b.X + a.Y*b.Y
 }
 
 func MatMult(mat ebiten.GeoM, vec Vec2) Vec2 {

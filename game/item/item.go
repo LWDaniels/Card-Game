@@ -4,7 +4,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Item interface {
 	// order of what gets updated first is undefined
-	Update()
+	Update() error
 
 	// will add scene graph system later
 	// Parent() *Item
@@ -13,7 +13,10 @@ type Item interface {
 	// the texture to draw with; if nil then don't draw
 	Texture() *ebiten.Image
 
+	TexScale() (float64, float64)
+
 	// the transform to draw with (relative to parent); if nil then don't draw
+	// also used for non-drawing transforms
 	GeoM() ebiten.GeoM
 
 	// returns the Z position of the item (relative to parent)
