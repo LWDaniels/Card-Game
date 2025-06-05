@@ -15,8 +15,10 @@ type TextureKey = int
 
 // StartRead and StopRead are a hacky way of allowing looping over the enums; don't try to load them
 const (
+	// DO NOT USE
 	StartRead TextureKey = iota
 	Gopher
+	// DO NOT USE
 	StopRead
 )
 

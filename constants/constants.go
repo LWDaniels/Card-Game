@@ -15,3 +15,11 @@ func WorldWidth() int {
 func WorldHeight() int {
 	return worldHeight
 }
+
+// tick this up with global IDs
+var idCounter uint64 = 0
+
+func NextID() uint64 {
+	idCounter++
+	return idCounter
+}
