@@ -20,10 +20,9 @@ type Card struct {
 func NewCard() *Card {
 	c := &Card{}
 	c.TransformContainerImplementer = transform.NewTCIDefault()
-	s := sprite.NewSpriteX(textures.Gopher, v.Zero(), 0, v.FromF(.5))
+	s := sprite.NewSpriteX(textures.Gopher, v.One(), 0, v.FromF(.5))
 	c.sprite = &s
-	// should use an add child method or something
-	c.Trans.Children = append(c.Trans.Children, c.sprite)
+	c.AddChild(c.sprite)
 	c.vel = v.Zero()
 	c.size = v.NewVec2(50, 75)
 	return c

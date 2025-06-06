@@ -72,7 +72,7 @@ func NewTCI(scale vec2.Vec2, rotation float32, position vec2.Vec2, z float32) *T
 }
 
 func NewTCIDefault() *TransformContainerImplementer {
-	return NewTCI(vec2.Zero(), 0, vec2.Zero(), 0)
+	return NewTCI(vec2.One(), 0, vec2.Zero(), 0)
 }
 
 func NewTransform(scale vec2.Vec2, rotation float32, position vec2.Vec2, z float32) Transform {

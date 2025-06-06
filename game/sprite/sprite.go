@@ -8,7 +8,6 @@ import (
 	eb "github.com/hajimehoshi/ebiten/v2"
 )
 
-// nah, should just delete this all
 type Sprite struct {
 	*transform.TransformContainerImplementer
 	Texture *eb.Image
@@ -24,7 +23,7 @@ func NewSpriteX(texKey textures.TextureKey, scale vec2.Vec2, rotation float32, a
 	im := assets.GetTexture(texKey)
 	imSize := im.Bounds().Size()
 	return Sprite{transform.NewTCI(scale, rotation,
-		vec2.Product(vec2.NewVec2(float32(imSize.X), float32(imSize.Y)), anchor), 0),
+		vec2.Product(vec2.NewVec2(float32(-imSize.X), float32(-imSize.Y)), anchor), 0),
 		im}
 }
 
