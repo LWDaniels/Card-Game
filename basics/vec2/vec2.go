@@ -4,7 +4,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 // gonna keep this as a relatively constant struct rn so you cant do += or similar operations
 type Vec2 struct {
-	X, Y float32
+	X, Y float32 // TODO: switch to float64 (cost seems negligible and will save some coding time lol)
 }
 
 func NewVec2(x float32, y float32) Vec2 {
@@ -77,4 +77,8 @@ func Dot(a, b Vec2) float32 {
 func MatMult(mat ebiten.GeoM, vec Vec2) Vec2 {
 	x, y := mat.Apply(float64(vec.X), float64(vec.Y))
 	return Vec2{float32(x), float32(y)}
+}
+
+func Lerp(a, b Vec2, interp float32) Vec2 {
+	return Sum(a, Product(Difference(b, a), FromF(interp)))
 }

@@ -1,5 +1,6 @@
 // currently using an embedding system
 // unfortunately this may not scale for all assets so maybe expand to runtime loading in the future
+// also possibly move this to basics/ later
 package assets
 
 /*

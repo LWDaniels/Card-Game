@@ -2,9 +2,9 @@ package card
 
 import (
 	"github.com/LWDaniels/Card-Game/assets/textures"
+	"github.com/LWDaniels/Card-Game/basics/transform"
 	v "github.com/LWDaniels/Card-Game/basics/vec2"
 	"github.com/LWDaniels/Card-Game/game/sprite"
-	"github.com/LWDaniels/Card-Game/game/transform"
 	eb "github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -20,7 +20,8 @@ type Card struct {
 func NewCard() *Card {
 	c := &Card{}
 	c.TransformContainerImplementer = transform.NewTCIDefault()
-	s := sprite.NewSpriteX(textures.Gopher, v.One(), 0, v.FromF(.5))
+	c.Trans.Scale = v.FromF(1)
+	s := sprite.NewSpriteX(textures.Gopher, v.FromF(.2), 0, v.NewVec2(.5, .8))
 	c.sprite = &s
 	c.AddChild(c.sprite)
 	c.vel = v.Zero()
