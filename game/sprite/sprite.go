@@ -9,7 +9,7 @@ import (
 )
 
 type Sprite struct {
-	*transform.TransformContainerImplementer
+	*transform.TransformContainerDefault
 	Texture *eb.Image
 }
 
@@ -23,7 +23,7 @@ func NewSpriteX(texKey textures.TextureKey, scale vec2.Vec2, rotation float32, a
 	im := assets.GetTexture(texKey)
 	imSize := im.Bounds().Size()
 	anchor = vec2.Product(anchor, scale)
-	return Sprite{transform.NewTCI(scale, rotation,
+	return Sprite{transform.NewTCD(scale, rotation,
 		vec2.Product(vec2.NewVec2(float32(-imSize.X), float32(-imSize.Y)), anchor), 0),
 		im}
 }

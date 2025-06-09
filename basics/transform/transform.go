@@ -26,20 +26,20 @@ type TransformContainer interface {
 }
 
 // embed a pointer to this and things should work :)
-type TransformContainerImplementer struct {
+type TransformContainerDefault struct {
 	Trans Transform
 }
 
-func (tci *TransformContainerImplementer) Transform() Transform {
+func (tci *TransformContainerDefault) Transform() Transform {
 	return tci.Trans
 }
 
-func (tci *TransformContainerImplementer) SetTransform(t Transform) {
+func (tci *TransformContainerDefault) SetTransform(t Transform) {
 	tci.Trans = t
 }
 
 // removes child's current Parent reference
-func (tci *TransformContainerImplementer) AddChild(child TransformContainer) {
+func (tci *TransformContainerDefault) AddChild(child TransformContainer) {
 	child.Orphan()
 	tci.Trans.Children = append(tci.Trans.Children, child)
 	ct := child.Transform()
@@ -47,7 +47,7 @@ func (tci *TransformContainerImplementer) AddChild(child TransformContainer) {
 	child.SetTransform(ct)
 }
 
-func (tci *TransformContainerImplementer) RemoveChild(child TransformContainer) {
+func (tci *TransformContainerDefault) RemoveChild(child TransformContainer) {
 	acc := make([]TransformContainer, 0)
 	for _, c := range tci.Trans.Children {
 		if c != child { // questionable equality check, prob need an ID
@@ -58,7 +58,7 @@ func (tci *TransformContainerImplementer) RemoveChild(child TransformContainer) 
 }
 
 // may change global GeoM
-func (tci *TransformContainerImplementer) Orphan() {
+func (tci *TransformContainerDefault) Orphan() {
 	if tci.Trans.Parent == nil {
 		return
 	}
@@ -67,12 +67,12 @@ func (tci *TransformContainerImplementer) Orphan() {
 	tci.Trans.Parent = nil
 }
 
-func NewTCI(scale vec2.Vec2, rotation float32, position vec2.Vec2, z float32) *TransformContainerImplementer {
-	return &TransformContainerImplementer{NewTransform(scale, rotation, position, z)}
+func NewTCD(scale vec2.Vec2, rotation float32, position vec2.Vec2, z float32) *TransformContainerDefault {
+	return &TransformContainerDefault{NewTransform(scale, rotation, position, z)}
 }
 
-func NewTCIDefault() *TransformContainerImplementer {
-	return NewTCI(vec2.One(), 0, vec2.Zero(), 0)
+func NewTCDDefault() *TransformContainerDefault {
+	return NewTCD(vec2.One(), 0, vec2.Zero(), 0)
 }
 
 func NewTransform(scale vec2.Vec2, rotation float32, position vec2.Vec2, z float32) Transform {

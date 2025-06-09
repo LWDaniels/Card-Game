@@ -13,11 +13,11 @@ import (
 )
 
 type Game struct {
-	*transform.TransformContainerImplementer
+	*transform.TransformContainerDefault
 }
 
 func NewGame() *Game {
-	g := Game{transform.NewTCIDefault()}
+	g := Game{transform.NewTCDDefault()}
 
 	startX, stopX := float32(75), float32(constants.WorldWidth()-75)
 	arcMinY, arcMaxY := float32(constants.WorldHeight()-30), float32(constants.WorldHeight()-100)
@@ -42,21 +42,24 @@ func NewGame() *Game {
 
 // note that this is a fixed update
 func (g *Game) Update() error {
-	g.HandleInput()
-
-	// will need to propagate updates to transforms or something
+	propagateUpdate(g)
 	return nil
 }
 
-func (g *Game) HandleInput() {
-	// if !inpututil.IsMouseButtonJustPressed(eb.MouseButton0) {
-	// 	return
-	// }
+func propagateUpdate(tc transform.TransformContainer) error {
+	for _, child := range tc.Transform().Children {
+		propagateUpdate(child)
 
-	// // will need to change for mobile
-	// mouseXInt, mouseYInt := eb.CursorPosition()
-	// mousePos := vec2.Vec2{X: float32(mouseXInt), Y: float32(mouseYInt)}
-
+		c, ok := child.(*card.Card)
+		if !ok {
+			continue
+		}
+		err := c.Update()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type Drawable struct {
