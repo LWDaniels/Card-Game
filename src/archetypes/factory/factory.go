@@ -11,15 +11,19 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
-// shouldn't create a card by itself for sprite positioning reasons
-func createCard(w donburi.World) *donburi.Entry {
+func CreateCard(w donburi.World, pos math.Vec2) *donburi.Entry {
 	card := archetypes.Card.Spawn(w)
+	components.InitTransform(card, math.NewVec2(1, 1), 0, pos)
+	children, _ := transform.GetChildren(card)
+	child := children[0] // only one child upon creation
+	components.InitCard(card, child)
+
 	im := assets.GetTexture(textures.BlackLotus)
-	components.InitSprite(card, im)
+	components.InitSprite(child, im)
 	scale := math.NewVec2(.2, .2)
-	components.InitTransform(card, scale,
+	components.InitTransform(child, scale,
 		0, scale.Mul(math.NewVec2(float64(-im.Bounds().Dx()/2), float64(-im.Bounds().Dy()/2))))
-	components.InitInteractable(card, func(e *donburi.Entry, localMousePos math.Vec2) {
+	components.InitInteractable(child, func(e *donburi.Entry, localMousePos math.Vec2) {
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			parent, _ := transform.GetParent(e) // assumes a parent for reasons :)
 			transform.GetTransform(parent).LocalRotation += 1
@@ -27,11 +31,4 @@ func createCard(w donburi.World) *donburi.Entry {
 	})
 
 	return card
-}
-
-func CreateCardContainer(w donburi.World, pos math.Vec2) *donburi.Entry {
-	parent := w.Entry(w.Create(transform.Transform))
-	components.InitTransform(parent, math.NewVec2(1, 1), 0, pos)
-	transform.AppendChild(parent, createCard(w), false)
-	return parent
 }

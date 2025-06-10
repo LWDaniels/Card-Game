@@ -15,7 +15,7 @@ type GameScene struct {
 
 func NewGameScene() *GameScene {
 	g := &GameScene{donburi.NewWorld()}
-	factory.CreateCardContainer(g.World, math.NewVec2(float64(constants.WorldWidth()/2),
+	factory.CreateCard(g.World, math.NewVec2(float64(constants.WorldWidth()/2),
 		float64(constants.WorldHeight()/2)))
 	return g
 }
