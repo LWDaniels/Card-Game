@@ -9,6 +9,7 @@ import (
 )
 
 // can also do unions over these which may be nice (not 100% sure how much I should encourage that tho)
+// can just use appends/... on Arch.components for now
 
 var (
 	Card   = newArchetype(tags.Card, components.Card, components.Sprite, transform.Transform, components.Interactable)

@@ -13,3 +13,7 @@ type SpriteData struct {
 
 // requires transform component
 var Sprite = donburi.NewComponentType[SpriteData](SpriteData{assets.GetTexture(textures.Gopher)})
+
+func InitSprite(e *donburi.Entry, Image *ebiten.Image) {
+	Sprite.Get(e).Image = Image
+}

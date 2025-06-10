@@ -19,6 +19,7 @@ This however would come at the cost of portability (esp for web)
 import (
 	"bytes"
 	"image"
+	_ "image/jpeg"
 	_ "image/png" // to enable png decoding
 	"log"
 
