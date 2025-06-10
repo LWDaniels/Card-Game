@@ -8,9 +8,11 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
+// can also do unions over these which may be nice (not 100% sure how much I should encourage that tho)
+
 var (
-	Card   = newArchetype(tags.Card, components.Card, components.Sprite, transform.Transform)
-	Button = newArchetype(tags.Button, components.Sprite, transform.Transform)
+	Card   = newArchetype(tags.Card, components.Card, components.Sprite, transform.Transform, components.Interactable)
+	Button = newArchetype(tags.Button, components.Sprite, transform.Transform, components.Interactable)
 )
 
 type archetype struct {

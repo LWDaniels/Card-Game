@@ -13,6 +13,7 @@ import (
 type Scene interface {
 	Update() error
 	Draw(*ebiten.Image)
+	// maybe add an Init() error one too
 }
 
 type Game struct {
@@ -22,8 +23,8 @@ type Game struct {
 
 func NewGame() *Game {
 	g := &Game{
-		scene:  &scenes.MainMenuScene{},
-		bounds: image.Rectangle{},
+		scene:  scenes.NewMainMenuScene(),
+		bounds: image.Rect(0, 0, constants.WorldWidth(), constants.WorldHeight()),
 	}
 	return g
 }
@@ -38,7 +39,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(width, height int) (int, int) {
-	g.bounds = image.Rect(0, 0, width, height)
+	// g.bounds = image.Rect(0, 0, width, height)
 	return width, height
 }
 
