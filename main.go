@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/LWDaniels/Card-Game/assets"
-	"github.com/LWDaniels/Card-Game/constants"
-	"github.com/LWDaniels/Card-Game/scenes"
+	"github.com/LWDaniels/Card-Game/src/constants"
+	"github.com/LWDaniels/Card-Game/src/scenes"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

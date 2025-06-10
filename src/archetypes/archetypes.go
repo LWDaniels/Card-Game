@@ -2,15 +2,15 @@
 package archetypes
 
 import (
-	"github.com/LWDaniels/Card-Game/archetypes/tags"
-	"github.com/LWDaniels/Card-Game/components"
+	"github.com/LWDaniels/Card-Game/src/archetypes/tags"
+	"github.com/LWDaniels/Card-Game/src/components"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/transform"
 )
 
 var (
-	Card   = newArchetype(tags.Card, components.Card, transform.Transform)
-	Button = newArchetype(tags.Button, transform.Transform)
+	Card   = newArchetype(tags.Card, components.Card, components.Sprite, transform.Transform)
+	Button = newArchetype(tags.Button, components.Sprite, transform.Transform)
 )
 
 type archetype struct {
