@@ -10,14 +10,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Scene interface {
-	Update() error
-	Draw(*ebiten.Image)
-	// maybe add an Init() error one too
-}
-
 type Game struct {
-	scene  Scene
+	scene  scenes.Scene
 	bounds image.Rectangle
 }
 
@@ -30,6 +24,7 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	g.scene = scenes.NextScene()
 	return g.scene.Update()
 }
 
