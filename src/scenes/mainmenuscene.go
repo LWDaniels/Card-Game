@@ -21,12 +21,16 @@ type MainMenuScene struct {
 func NewMainMenuScene() *MainMenuScene {
 	m := &MainMenuScene{donburi.NewWorld()}
 
+	parent := m.World.Entry(m.World.Create(transform.Transform))
+	transform.SetWorldPosition(parent,
+		math.NewVec2(float64(constants.WorldWidth()/2),
+			float64(constants.WorldHeight()/2)))
+	transform.SetWorldRotation(parent, 1)
 	e := archetypes.Button.Spawn(m.World)
+	transform.AppendChild(parent, e, false)
 	im := components.Sprite.Get(e).Image
-	im.Fill(color.White)
-	transform.SetWorldPosition(e,
-		math.NewVec2(float64(constants.WorldWidth()/2-im.Bounds().Dx()/2),
-			float64(constants.WorldHeight()/2-im.Bounds().Dy()/2)))
+	t := transform.GetTransform(e)
+	t.LocalPosition = math.NewVec2(float64(-im.Bounds().Dx()/2), float64(-im.Bounds().Dy()/2))
 	components.Interactable.Get(e).HoverCallback = func(entry *donburi.Entry) {
 		components.Sprite.Get(entry).Image.Fill(color.RGBA{255, 0, 0, 255})
 	}

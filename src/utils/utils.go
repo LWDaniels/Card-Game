@@ -10,13 +10,17 @@ import (
 func GetGeoM(e *donburi.Entry) ebiten.GeoM {
 	// not particularly efficient... idk why transform doesn't store this info already
 	// (I could calculate it by hand from what it stores but I'm too lazy)
+	// transform.World... stuff seems unreliable tbh
 	g := ebiten.GeoM{}
-	scale := transform.WorldScale(e)
-	rot := transform.WorldRotation(e)
-	pos := transform.WorldPosition(e)
-	g.Scale(scale.X, scale.Y)
-	g.Rotate(rot)
-	g.Translate(pos.X, pos.Y)
+	t := transform.GetTransform(e)
+	g.Scale(t.LocalScale.X, t.LocalScale.Y)
+	g.Rotate(t.LocalRotation)
+	g.Translate(t.LocalPosition.X, t.LocalPosition.Y)
 
-	return g
+	if parent, ok := transform.GetParent(e); ok {
+		g.Concat(GetGeoM(parent))
+		return g
+	} else {
+		return g
+	}
 }
