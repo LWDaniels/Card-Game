@@ -16,6 +16,7 @@ var (
 	Button = newArchetype(tags.Button, components.Sprite, transform.Transform, components.Interactable)
 )
 
+// prob want to add a child *archetype or something similar to allow for nesting
 type archetype struct {
 	components []donburi.IComponentType
 }
