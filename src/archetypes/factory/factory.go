@@ -5,7 +5,6 @@ import (
 	"github.com/LWDaniels/Card-Game/assets/textures"
 	"github.com/LWDaniels/Card-Game/src/archetypes"
 	"github.com/LWDaniels/Card-Game/src/components"
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
 	"github.com/yohamta/donburi/features/transform"
@@ -20,14 +19,11 @@ func CreateCard(w donburi.World, pos math.Vec2) *donburi.Entry {
 
 	im := assets.GetTexture(textures.BlackLotus)
 	components.InitSprite(child, im)
-	scale := math.NewVec2(.2, .2)
+	scale := math.NewVec2(.12, .12)
 	components.InitTransform(child, scale,
 		0, scale.Mul(math.NewVec2(float64(-im.Bounds().Dx()/2), float64(-im.Bounds().Dy()/2))))
 	components.InitInteractable(child, func(e *donburi.Entry, localMousePos math.Vec2) {
-		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			parent, _ := transform.GetParent(e) // assumes a parent for reasons :)
-			transform.GetTransform(parent).LocalRotation += 1
-		}
+		// just setting held value and letting scene handle the rest for now
 	})
 
 	return card

@@ -29,8 +29,10 @@ func TriggerInteractables(w donburi.World) {
 		g.Invert()
 		localMouseX, localMouseY := g.Apply(float64(mouseX), float64(mouseY))
 		bounds := components.Sprite.Get(e).Image.Bounds()
-		if float64(bounds.Min.X) <= localMouseX && float64(bounds.Max.X) >= localMouseX &&
-			float64(bounds.Min.Y) <= localMouseY && float64(bounds.Max.Y) >= localMouseY {
+		hovering := float64(bounds.Min.X) <= localMouseX && float64(bounds.Max.X) >= localMouseX &&
+			float64(bounds.Min.Y) <= localMouseY && float64(bounds.Max.Y) >= localMouseY
+		components.Interactable.Get(e).Hovered = hovering
+		if hovering {
 			components.Interactable.Get(e).HoverCallback(e, math.NewVec2(localMouseX, localMouseY))
 		}
 	})

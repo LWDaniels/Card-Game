@@ -6,6 +6,7 @@ import (
 )
 
 type InteractableData struct {
+	Hovered       bool // whether the cursor is currently over this
 	HoverCallback func(self *donburi.Entry, localMousePos math.Vec2)
 }
 
@@ -13,5 +14,7 @@ type InteractableData struct {
 var Interactable = donburi.NewComponentType[InteractableData]()
 
 func InitInteractable(e *donburi.Entry, HoverCallback func(*donburi.Entry, math.Vec2)) {
-	Interactable.Get(e).HoverCallback = HoverCallback
+	i := Interactable.Get(e)
+	i.Hovered = false
+	i.HoverCallback = HoverCallback
 }

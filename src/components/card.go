@@ -10,5 +10,6 @@ type CardData struct {
 var Card = donburi.NewComponentType[CardData]()
 
 func InitCard(e *donburi.Entry, child *donburi.Entry) {
-	Card.Get(e).Child = child
+	c := Card.Get(e)
+	c.Child = child
 }
