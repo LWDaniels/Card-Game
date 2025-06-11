@@ -30,7 +30,7 @@ func NewMainMenuScene() *MainMenuScene {
 	im := components.Sprite.Get(e).Image
 	t := transform.GetTransform(e)
 	t.LocalPosition = math.NewVec2(float64(-im.Bounds().Dx()/2), float64(-im.Bounds().Dy()/2))
-	components.Interactable.Get(e).HoverCallback = func(entry *donburi.Entry, localMousePos math.Vec2) {
+	components.Interactable.Get(e).DuringHover = func(entry *donburi.Entry, localMousePos math.Vec2) {
 		components.Sprite.Get(entry).Image.Fill(color.RGBA{255, 0, 0, 255})
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			SetNextScene(GameSceneID)

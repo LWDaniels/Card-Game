@@ -13,18 +13,23 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
+func none(self *donburi.Entry, localMousePos math.Vec2) {}
+
 func CreateZone(w donburi.World, topLeft math.Vec2, size image.Point) *donburi.Entry {
 	zone := archetypes.Zone.Spawn(w)
 	scale := float64(.2)
 	scaledWidth, scaledHeight := int(float64(size.X)/scale), int(float64(size.Y)/scale)
 	components.InitNinePatch(zone, assets.GetTexture(textures.Border), image.Pt(scaledWidth, scaledHeight))
 	components.InitTransform(zone, math.NewVec2(scale, scale), 0, topLeft)
-	components.InitInteractable(zone, func(e *donburi.Entry, v math.Vec2) {
-		np := components.NinePatch.Get(e)
-		tint := ebiten.ColorScale{}
-		tint.Scale(1, 0, 0, 1)
-		np.SetTint(tint)
-	})
+	tintFunc := func(r, g, b, a float32) func(self *donburi.Entry, _ math.Vec2) {
+		return func(e *donburi.Entry, v math.Vec2) {
+			np := components.NinePatch.Get(e)
+			tint := ebiten.ColorScale{}
+			tint.Scale(r, g, b, a)
+			np.SetTint(tint)
+		}
+	}
+	components.InitInteractable(zone, tintFunc(1, 0, 0, 1), none, tintFunc(1, 1, 1, 1))
 	return zone
 }
 
@@ -40,9 +45,7 @@ func CreateCard(w donburi.World, pos math.Vec2) *donburi.Entry {
 	scale := math.NewVec2(.12, .12)
 	components.InitTransform(child, scale,
 		0, scale.Mul(math.NewVec2(float64(-im.Bounds().Dx()/2), float64(-im.Bounds().Dy()/2))))
-	components.InitInteractable(child, func(e *donburi.Entry, localMousePos math.Vec2) {
-		// just setting held value and letting scene handle the rest for now
-	})
+	components.InitInteractable(child, none, none, none)
 
 	return card
 }

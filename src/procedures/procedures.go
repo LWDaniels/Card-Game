@@ -33,9 +33,17 @@ func TriggerInteractables(w donburi.World) {
 		bounds := components.Bounds(e)
 		hovering := 0 <= localMouseX && bounds.X >= localMouseX &&
 			0 <= localMouseY && bounds.Y >= localMouseY
-		components.Interactable.Get(e).Hovered = hovering
+		interactable := components.Interactable.Get(e)
+		localMousePos := math.NewVec2(localMouseX, localMouseY)
 		if hovering {
-			components.Interactable.Get(e).HoverCallback(e, math.NewVec2(localMouseX, localMouseY))
+			if !interactable.Hovered {
+				interactable.Hovered = true
+				interactable.OnEnter(e, localMousePos)
+			}
+			interactable.DuringHover(e, localMousePos)
+		} else if interactable.Hovered {
+			interactable.Hovered = false
+			interactable.OnExit(e, localMousePos)
 		}
 	})
 }

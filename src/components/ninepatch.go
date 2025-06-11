@@ -24,7 +24,7 @@ func subImageFromIndex(Image *ebiten.Image, xIndex, yIndex int) *ebiten.Image {
 }
 
 // divides Image into 3x3 chunks before stretching it based on Size
-// may be suspect if doing a ninepatch made of ninepatch sprites, idk
+// may be suspect if doing a ninepatch made of ninepatch sprites and/or sprite sheets (which may be an issue bc of ebiten batching?)
 func InitNinePatch(e *donburi.Entry, Image *ebiten.Image, Size image.Point) {
 	np := NinePatch.Get(e)
 	np.im = Image
