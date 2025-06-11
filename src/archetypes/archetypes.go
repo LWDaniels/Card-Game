@@ -1,4 +1,5 @@
 // archetypes are a collection of components, possibly with another archetype as its child
+// can think of these as prefabs
 package archetypes
 
 import (
@@ -18,8 +19,7 @@ var (
 	_CardInteractable = newArchetype(components.Sprite, transform.Transform, components.Interactable)
 	Card              = addChild(newArchetype(tags.Card, components.Card, transform.Transform), _CardInteractable) // not sure if the addChild is helpful...
 	Button            = newArchetype(tags.Button, components.Sprite, transform.Transform, components.Interactable)
-	// to reduce line thickness, scale attached transform
-	NinePatch = newArchetype(tags.NinePatch, components.NinePatch, transform.Transform) // requires proper initialization since I'm not using addChild
+	Zone              = newArchetype(tags.Zone, components.NinePatch, transform.Transform, components.Interactable)
 )
 
 type archetype struct {

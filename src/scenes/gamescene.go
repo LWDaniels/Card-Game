@@ -1,6 +1,8 @@
 package scenes
 
 import (
+	"image"
+
 	"github.com/LWDaniels/Card-Game/src/archetypes/factory"
 	"github.com/LWDaniels/Card-Game/src/components"
 	"github.com/LWDaniels/Card-Game/src/constants"
@@ -33,6 +35,10 @@ func NewGameScene() *GameScene {
 		t := transform.GetTransform(card)
 		t.LocalPosition = SlotPos(i, startingCards)
 	}
+
+	factory.CreateZone(g.World, math.NewVec2(10, 10), image.Pt(constants.WorldWidth()-20, 100))
+	factory.CreateZone(g.World, math.NewVec2(10, 120), image.Pt(100, 300))
+	factory.CreateZone(g.World, math.NewVec2(float64(constants.WorldWidth()-110), 120), image.Pt(100, 300))
 
 	return g
 }

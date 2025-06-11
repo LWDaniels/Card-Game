@@ -27,15 +27,15 @@ const (
 // seems kind of expensive per sprite but what do I know
 var (
 	//go:embed gopher.png
-	Gopher_png []byte
+	gopher_png []byte
 	//go:embed black-lotus.jpg
-	BlackLotus_png []byte
+	blackLotus_png []byte
 	//go:embed border.png
-	Border_png []byte
+	border_png []byte
 )
 
 var TextureBytes = map[TextureKey][]byte{
-	Gopher:     Gopher_png,
-	BlackLotus: BlackLotus_png,
-	Border:     Border_png,
+	Gopher:     gopher_png,
+	BlackLotus: blackLotus_png,
+	Border:     border_png,
 }

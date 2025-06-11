@@ -6,8 +6,8 @@ import (
 )
 
 type InteractableData struct {
-	Hovered       bool // whether the cursor is currently over this
-	HoverCallback func(self *donburi.Entry, localMousePos math.Vec2)
+	Hovered       bool                                               // whether the cursor is currently over this
+	HoverCallback func(self *donburi.Entry, localMousePos math.Vec2) // should prob have OnEnter, OnExit, DuringHover ones separately
 }
 
 // requires transform and sprite (should allow ninepatch as sprite alternative)

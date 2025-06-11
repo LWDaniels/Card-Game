@@ -75,3 +75,9 @@ func (np *NinePatchData) StretchTo(size image.Point) {
 		t.LocalScale = math.NewVec2(xScale, yScale)
 	}
 }
+
+func (np *NinePatchData) SetTint(tint ebiten.ColorScale) {
+	for _, child := range np.children {
+		Sprite.Get(child).Tint = tint
+	}
+}

@@ -9,10 +9,11 @@ import (
 
 type SpriteData struct {
 	Image *ebiten.Image
+	Tint  ebiten.ColorScale
 }
 
 // requires transform component
-var Sprite = donburi.NewComponentType[SpriteData](SpriteData{assets.GetTexture(textures.Gopher)})
+var Sprite = donburi.NewComponentType[SpriteData](SpriteData{assets.GetTexture(textures.Gopher), ebiten.ColorScale{}})
 
 func InitSprite(e *donburi.Entry, Image *ebiten.Image) {
 	Sprite.Get(e).Image = Image
