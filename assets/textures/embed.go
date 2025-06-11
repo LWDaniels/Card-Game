@@ -19,6 +19,7 @@ const (
 	StartRead TextureKey = iota
 	Gopher
 	BlackLotus
+	Border
 	// DO NOT USE
 	StopRead
 )
@@ -29,9 +30,12 @@ var (
 	Gopher_png []byte
 	//go:embed black-lotus.jpg
 	BlackLotus_png []byte
+	//go:embed border.png
+	Border_png []byte
 )
 
 var TextureBytes = map[TextureKey][]byte{
 	Gopher:     Gopher_png,
 	BlackLotus: BlackLotus_png,
+	Border:     Border_png,
 }

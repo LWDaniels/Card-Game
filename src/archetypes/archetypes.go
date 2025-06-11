@@ -16,12 +16,10 @@ import (
 
 var (
 	_CardInteractable = newArchetype(components.Sprite, transform.Transform, components.Interactable)
-	Card              = addChild(newArchetype(tags.Card, components.Card, transform.Transform), _CardInteractable)
+	Card              = addChild(newArchetype(tags.Card, components.Card, transform.Transform), _CardInteractable) // not sure if the addChild is helpful...
 	Button            = newArchetype(tags.Button, components.Sprite, transform.Transform, components.Interactable)
-	/*
-		TODO:
-		- NinePatch (parent of 9 sprite nodes, not sure if they can all be in one archetype or if you need 9 actual children)
-	*/
+	// to reduce line thickness, scale attached transform
+	NinePatch = newArchetype(tags.NinePatch, components.NinePatch, transform.Transform) // requires proper initialization since I'm not using addChild
 )
 
 type archetype struct {

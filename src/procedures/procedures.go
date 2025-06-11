@@ -28,7 +28,7 @@ func TriggerInteractables(w donburi.World) {
 		g := utils.GetGeoM(e)
 		g.Invert()
 		localMouseX, localMouseY := g.Apply(float64(mouseX), float64(mouseY))
-		bounds := components.Sprite.Get(e).Image.Bounds()
+		bounds := components.Sprite.Get(e).Image.Bounds() // TODO: allow ninepatch as sprite alternative
 		hovering := float64(bounds.Min.X) <= localMouseX && float64(bounds.Max.X) >= localMouseX &&
 			float64(bounds.Min.Y) <= localMouseY && float64(bounds.Max.Y) >= localMouseY
 		components.Interactable.Get(e).Hovered = hovering

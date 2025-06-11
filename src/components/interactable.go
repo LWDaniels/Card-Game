@@ -10,7 +10,7 @@ type InteractableData struct {
 	HoverCallback func(self *donburi.Entry, localMousePos math.Vec2)
 }
 
-// requires transform and sprite
+// requires transform and sprite (should allow ninepatch as sprite alternative)
 var Interactable = donburi.NewComponentType[InteractableData]()
 
 func InitInteractable(e *donburi.Entry, HoverCallback func(*donburi.Entry, math.Vec2)) {
