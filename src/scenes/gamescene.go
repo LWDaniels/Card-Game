@@ -4,6 +4,7 @@ import (
 	"image"
 
 	"github.com/LWDaniels/Card-Game/src/archetypes/factory"
+	"github.com/LWDaniels/Card-Game/src/archetypes/tags"
 	"github.com/LWDaniels/Card-Game/src/components"
 	"github.com/LWDaniels/Card-Game/src/constants"
 	"github.com/LWDaniels/Card-Game/src/procedures"
@@ -17,15 +18,16 @@ import (
 )
 
 type GameScene struct {
-	World    donburi.World
-	Hand     []*donburi.Entry
-	HeldCard *donburi.Entry
+	World       donburi.World
+	Hand        []*donburi.Entry
+	HoveredZone *donburi.Entry
+	HeldCard    *donburi.Entry
 }
 
 const startingCards = int(4)
 
 func NewGameScene() *GameScene {
-	g := &GameScene{donburi.NewWorld(), make([]*donburi.Entry, 0), nil}
+	g := &GameScene{donburi.NewWorld(), make([]*donburi.Entry, 0), nil, nil}
 	for range startingCards {
 		c := factory.CreateCard(g.World, math.NewVec2(float64(constants.WorldWidth()/2),
 			float64(constants.WorldHeight()/2)))
@@ -43,15 +45,41 @@ func NewGameScene() *GameScene {
 	return g
 }
 
+var zoneQuery = donburi.NewQuery(filter.Contains(tags.Zone))
+
+func (g *GameScene) ManageZone() {
+	zoneQuery.Each(g.World, func(e *donburi.Entry) {
+		interactable := components.Interactable.Get(e)
+		if interactable.Hovered {
+			g.HoveredZone = e
+		}
+	})
+}
+
+func (g *GameScene) PlayCard(card *donburi.Entry) {
+	// should resolve something
+	acc := make([]*donburi.Entry, 0)
+	for _, e := range g.Hand {
+		if card.Id() == e.Id() {
+			continue
+		}
+		acc = append(acc, e)
+	}
+	g.Hand = acc
+	transform.RemoveRecursive(card)
+}
+
 var cardQuery = donburi.NewQuery(filter.Contains(components.Card))
 
 func (g *GameScene) ManageHand() {
 	// gather held card
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+		if g.HeldCard != nil && g.HoveredZone != nil {
+			g.PlayCard(g.HeldCard)
+		}
 		g.HeldCard = nil
 	} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
 		cardQuery.Each(g.World, func(e *donburi.Entry) {
-			// this is annoying so maybe just have a pointer to the interactable in the card lol
 			child, _ := transform.FindChildWithComponent(e, components.Interactable)
 			interactable := components.Interactable.Get(child)
 			if interactable.Hovered {
@@ -87,8 +115,9 @@ func SlotPos(cardIndex int, numCards int) math.Vec2 {
 }
 
 func (g *GameScene) Update() error {
-	g.ManageHand()
 	procedures.TriggerInteractables(g.World)
+	g.ManageZone()
+	g.ManageHand()
 	return nil
 }
 
