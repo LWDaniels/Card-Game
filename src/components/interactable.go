@@ -10,6 +10,7 @@ type InteractableData struct {
 	OnEnter     func(self *donburi.Entry, localMousePos math.Vec2)
 	DuringHover func(self *donburi.Entry, localMousePos math.Vec2)
 	OnExit      func(self *donburi.Entry, localMousePos math.Vec2)
+	// maybe should allow some game parameters like hand (idk an easy way to do this; maybe pass donburi entry?)
 }
 
 func none(self *donburi.Entry, localMousePos math.Vec2) {

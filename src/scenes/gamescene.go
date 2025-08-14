@@ -48,6 +48,7 @@ func NewGameScene() *GameScene {
 var zoneQuery = donburi.NewQuery(filter.Contains(tags.Zone))
 
 func (g *GameScene) ManageZone() {
+	g.HoveredZone = nil
 	zoneQuery.Each(g.World, func(e *donburi.Entry) {
 		interactable := components.Interactable.Get(e)
 		if interactable.Hovered {
