@@ -8,8 +8,8 @@ var (
 		Text:           "Take {level} damage.",
 		RequiresTarget: false,
 		Effects: map[logic.Trigger]logic.Effect{
-			logic.TriggerResolve: func(state *logic.BoardState, activePlayerIndex int, originalCard *logic.CardInstance, triggerParameters ...any) {
-				state.Players[activePlayerIndex].Health -= originalCard.Level
+			logic.TriggerResolve: func(state *logic.BoardState, casterIndex int, originalCard *logic.CardInstance) {
+				state.Players[casterIndex].Health -= originalCard.Level
 			},
 		},
 	}
@@ -18,11 +18,20 @@ var (
 		Text:           "Upgrade the next card {level} times. If you can't, copy its ability instead (at this card's level).",
 		RequiresTarget: false,
 		Effects: map[logic.Trigger]logic.Effect{
-			logic.TriggerNextPlay: func(state *logic.BoardState, activePlayerIndex int, originalCard *logic.CardInstance, triggerParameters ...any) {
-				effectedCard := triggerParameters[0].(*logic.CardInstance)
+			logic.TriggerNextPlay: func(state *logic.BoardState, casterIndex int, originalCard *logic.CardInstance) {
+				effectedCard := state.StackCard
 				for range originalCard.Level {
 					if !effectedCard.Upgrade() {
-						// TODO: copy the card's effects (will need to be done with some on-play function that populates trigger event handlers)
+						state.Stack = append(state.Stack,
+							logic.Ability{Trigger: logic.TriggerResolve,
+								BoundEffect: func() {
+									effect, ok := effectedCard.Preset.Effects[logic.TriggerResolve]
+									if ok {
+										effect(state, state.ActivePlayerIndex, effectedCard)
+									}
+									// no post-resolve since this is just a copy, not a real card
+								},
+							})
 						return
 					}
 				}
@@ -34,7 +43,7 @@ var (
 		Text:           "Start your next hand with {level} more cards.",
 		RequiresTarget: false,
 		Effects: map[logic.Trigger]logic.Effect{
-			logic.TriggerDraw: func(state *logic.BoardState, activePlayerIndex int, originalCard *logic.CardInstance, triggerParameters ...any) {
+			logic.TriggerDraw: func(state *logic.BoardState, activePlayerIndex int, originalCard *logic.CardInstance) {
 				// TODO: effect to draw from deck (should be easy, but should have it as a function to make things easy)
 				// state.Players[activePlayerIndex].Hand
 			},

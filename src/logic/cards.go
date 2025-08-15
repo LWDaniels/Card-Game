@@ -16,6 +16,13 @@ type CardInstance struct {
 	// may need a modifications list
 }
 
+func NewInstance(preset *CardPreset) *CardInstance {
+	return &CardInstance{Level: 1,
+		Target: TargetNone, // will need random or oscillating targets for targeted cards in future
+		Preset: preset,
+	}
+}
+
 func (ci *CardInstance) Upgrade() (couldUpgrade bool) {
 	prevLevel := ci.Level
 	ci.Level = max(ci.Level+1, 3)
@@ -23,11 +30,17 @@ func (ci *CardInstance) Upgrade() (couldUpgrade bool) {
 }
 
 // originalCard is always the card that caused this effect, not the card this may be effecting
-type Effect func(state *BoardState, activePlayerIndex int, originalCard *CardInstance, triggerParameters ...any) // no idea what this should return
+type Effect func(state *BoardState, casterIndex int, originalCard *CardInstance) // no idea what this should return
 
 type CardPreset struct {
 	Name           string
 	Text           string
 	RequiresTarget bool
-	Effects        map[Trigger]Effect // when a card is played, it registers all its Effects with the appropriate trigger event listeners
+	Effects        map[Trigger]Effect // when a card resolves, it triggers its TriggerResolve effect, then populates the appropriate event listeners with the other effects
+	// Effects could also instead be an Ability[] list, idk
+}
+
+type Ability struct {
+	Trigger     Trigger
+	BoundEffect func()
 }
