@@ -15,6 +15,9 @@ import (
 // these cannot be tagged and you get them upon instantiation by simply getting the first child
 // generally good practice to store a reference to the child in a parent component
 
+// ngl this ecs shit is annoying me; for now I will only be using it for renderable/transformable objects
+// could also use it for card properties, but I'd rather do it separately tbh
+
 var (
 	_CardInteractable = newArchetype(components.Sprite, transform.Transform, components.Interactable)
 	Card              = addChild(newArchetype(tags.Card, components.Card, transform.Transform), _CardInteractable) // not sure if the addChild is helpful...

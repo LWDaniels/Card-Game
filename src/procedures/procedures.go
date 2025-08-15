@@ -12,7 +12,7 @@ import (
 var drawQuery = donburi.NewQuery(filter.Contains(components.Sprite))
 
 func DrawSprites(w donburi.World, screen *ebiten.Image) {
-	drawQuery.Each(w, func(e *donburi.Entry) {
+	drawQuery.Each(w, func(e *donburi.Entry) { // not sorted rn
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM = utils.GetGeoM(e)
 		op.Filter = ebiten.FilterLinear // since we're not a pixel art game
