@@ -22,7 +22,7 @@ func WorldHeight() int {
 // tick this up with global IDs
 var idCounter uint64 = 0
 
-func NextID() uint64 { // don't think this is necessary anymore
+func NextID() uint64 {
 	idCounter++
 	return idCounter
 }

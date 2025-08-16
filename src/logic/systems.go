@@ -6,21 +6,27 @@ import (
 	"github.com/LWDaniels/Card-Game/src/constants"
 )
 
-func PlayCard(cardIndexInHand int, state *BoardState) {
+// returns a list which is [cardList] with [card] removed, if it is there
+func removeCard(card *CardInstance, cardList []*CardInstance) []*CardInstance {
+	// I think this can be done without having to return a new slice, but w/e
+	output := make([]*CardInstance, len(cardList)-1)
+	for _, c := range cardList {
+		if c.Id == card.Id {
+			continue
+		}
+		output = append(output, c)
+	}
+	return output
+}
+
+func PlayCard(card *CardInstance, state *BoardState) {
 	// requires the stack to be empty before this is played
 	// clearing stack just in case
 	state.Stack = make([]Ability, 1)
 
-	card := state.Players[state.ActivePlayerIndex].Hand[cardIndexInHand]
-	// remove card from hand
-	hand := make([]*CardInstance, len(state.Players[state.ActivePlayerIndex].Hand)-1)
-	for i, c := range state.Players[state.ActivePlayerIndex].Hand {
-		if i == cardIndexInHand {
-			continue
-		}
-		hand = append(hand, c)
-	}
-	state.Players[state.ActivePlayerIndex].Hand = hand
+	// remove card from hand or pass pile, whichever it happens to be in
+	state.Players[state.ActivePlayerIndex].Hand = removeCard(card, state.Players[state.ActivePlayerIndex].Hand)
+	state.Players[state.ActivePlayerIndex].PassPile = removeCard(card, state.Players[state.ActivePlayerIndex].PassPile)
 
 	// could factor into a function since it's also used in copying abilities, but that would require scope stuff
 	state.Stack = append(state.Stack,
@@ -45,7 +51,7 @@ func PopStack(state *BoardState) {
 	ability.BoundEffect()
 }
 
-// TODO: populates event listeners, moves the card to the waiting zone, etc.
+// TODO: populate event listeners
 // only done when the stack is empty (to prevent this from being used on copies; this should only be used on real cards)
 func PostResolve(card *CardInstance, state *BoardState) {
 	state.StackCard = nil
@@ -53,6 +59,8 @@ func PostResolve(card *CardInstance, state *BoardState) {
 	// populate event listeners :)
 }
 
+// maybe should rename since this is drawing from the deck, not rendering to screen
+// active player draws 1 card
 func Draw(state *BoardState) {
 	card := state.Deck[0] // assuming deck is never empty... maybe that's an incorrect assumption
 	state.Deck = state.Deck[1:]
@@ -60,11 +68,13 @@ func Draw(state *BoardState) {
 	// TODO: trigger draw abilities
 }
 
-// shuffles all hands into Waiting and puts it on the bottom of the deck
+// shuffles all hands/pass-piles into Waiting and puts it on the bottom of the deck
 func PlayPhaseEnd(state *BoardState) {
 	for i := range state.Players { // I don't assume the order matters
 		state.Waiting = append(state.Waiting, state.Players[i].Hand...)
 		state.Players[i].Hand = make([]*CardInstance, 0)
+		state.Waiting = append(state.Waiting, state.Players[i].PassPile...)
+		state.Players[i].PassPile = make([]*CardInstance, 0)
 		// maybe can trigger some stuff here?
 	}
 
@@ -76,7 +86,7 @@ func PlayPhaseEnd(state *BoardState) {
 }
 
 func PassPhaseBegin(state *BoardState) {
-	// assumes all hands are empty, waiting is empty, stack is empty, and deck is full
+	// assumes all hands/pass-piles are empty, waiting is empty, stack is empty, and deck is full
 	for range constants.CardsInHand {
 		for i := range state.Players { // idk if first draw should rotate or what
 			state.ActivePlayerIndex = i
@@ -85,3 +95,12 @@ func PassPhaseBegin(state *BoardState) {
 	}
 	// leaves the active player index on the last player; change if desired
 }
+
+/*
+TODO:
+- EVERYTHING about the passing phase
+- Add larger game loop that progresses from phase to phase, triggering these systems at the right times (and changing active player and such)
+- Add deck generation (make the deck at the start of the game based on the pool of cards)
+- Add deck random upgrades (not sure if it should be 5 different random cards per round or 5 upgrades... or a diff number)
+- Actually integrate stuff nto game logic
+*/

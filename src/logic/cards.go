@@ -1,5 +1,7 @@
 package logic
 
+import "github.com/LWDaniels/Card-Game/src/constants"
+
 type CardTarget uint // could redo to be a *bool if needed
 
 const (
@@ -10,14 +12,17 @@ const (
 
 // For an intance of a card, not for a type of card/card preset
 type CardInstance struct {
-	Level  int // in [1,2,3]; could have a more restricted int type if desired
+	Id     uint64 // unique id for this instance; to be used for comparisons
+	Level  int    // in [1,2,3]; could have a more restricted int type if desired
 	Target CardTarget
 	Preset *CardPreset
 	// may need a modifications list
 }
 
 func NewInstance(preset *CardPreset) *CardInstance {
-	return &CardInstance{Level: 1,
+	return &CardInstance{
+		Id:     constants.NextID(),
+		Level:  1,
 		Target: TargetNone, // will need random or oscillating targets for targeted cards in future
 		Preset: preset,
 	}
