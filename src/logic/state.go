@@ -6,22 +6,25 @@ import (
 	"github.com/looplab/fsm"
 )
 
-type Phase string
-
 // type BoardEvent string // maybe do this too
 
 const (
 	PhaseStart = "Start"
 	PhasePass  = "Pass"
 	PhasePlay  = "Play"
-	PhaseEnd   = "End"
+	PhaseEnd   = "Phase End"
+	// may need more granular phases for card resolution + triggers and such
+	EventStart     = "Event Start"
+	EventEnterPlay = "Enter Play"
+	EventEnterPass = "Enter Pass"
+	EventEnd       = "Event End"
 )
 
 var BoardEvents = fsm.Events{ // will prob need lots of changes
-	{Name: "start to pass", Src: []string{PhaseStart}, Dst: PhasePass},
-	{Name: "pass to play", Src: []string{PhasePass}, Dst: PhasePlay},
-	{Name: "play to pass", Src: []string{PhasePlay}, Dst: PhasePass},
-	{Name: "end game", Src: []string{PhasePlay, PhasePass}, Dst: PhaseEnd},
+	{Name: EventStart, Src: []string{PhaseStart}, Dst: PhasePass},
+	{Name: EventEnterPlay, Src: []string{PhasePass}, Dst: PhasePlay},
+	{Name: EventEnterPass, Src: []string{PhasePlay}, Dst: PhasePass},
+	{Name: EventEnd, Src: []string{PhasePlay, PhasePass}, Dst: PhaseEnd},
 }
 
 type BoardState struct {
@@ -31,12 +34,26 @@ type BoardState struct {
 	StackCard         *CardInstance   // the card that is resolving on the stack, if it exists
 	Waiting           []*CardInstance // where cards go until the end of the turn, where they are shuffled together and added to the bottom of the deck
 	ActivePlayerIndex int
-	Phase             *fsm.FSM
+	Phase             *fsm.FSM // trigger phase changes with Phase.Event(...); things will be triggered appropriately
 }
 
 func (bs *BoardState) EnterState(e *fsm.Event) {
-	// TODO
-	// will prob put all major game logic here
+	switch e.Dst {
+	case PhasePass:
+	case PhasePlay:
+	case PhaseEnd:
+		//TODO
+	}
+}
+
+func (bs *BoardState) LeaveState(e *fsm.Event) {
+	switch e.Src {
+	case PhaseStart:
+		// StartGame() // TODO
+	case PhasePass:
+	case PhasePlay:
+		PlayPhaseEnd(bs)
+	}
 }
 
 func NewBoardState() BoardState {
@@ -46,7 +63,8 @@ func NewBoardState() BoardState {
 	bs.Phase = fsm.NewFSM(PhaseStart, BoardEvents,
 		fsm.Callbacks{
 			"enter_state": func(_ context.Context, e *fsm.Event) { bs.EnterState(e) },
-		},
+			"leave_state": func(_ context.Context, e *fsm.Event) { bs.LeaveState(e) },
+		}, // can also do special stuff on specific transitions if needed; for now I am just handling enter/exit as they are tho
 	)
 	return bs
 }
