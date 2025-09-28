@@ -46,6 +46,9 @@ type CardPreset struct {
 }
 
 type Ability struct {
-	Trigger     Trigger
+	// note: the difference between effects and abilities
+	// are that abilities are on the stack (weird naming, ik)
+	// thus, abilities have the effect params bound to them
+	Trigger     Trigger // not actually sure if we need the trigger inside of here
 	BoundEffect func()
 }

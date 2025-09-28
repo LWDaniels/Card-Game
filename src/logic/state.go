@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"github.com/LWDaniels/Card-Game/src/logic/structures"
 	"github.com/looplab/fsm"
 )
 
@@ -28,11 +29,11 @@ var BoardEvents = fsm.Events{ // will prob need lots of changes
 }
 
 type BoardState struct {
-	Players           []Player        // Players[0] is always the local player
-	Deck              []*CardInstance // can add a new type if needed; for now, 0 is the top of the deck
-	Stack             []Ability       // first in, last out, like magic stack (active ability to resolve is the last index). There is only ever one Resolve effect on the stack
+	Players           []Player // Players[0] is always the local player
+	Deck              structures.Stack[*CardInstance]
+	Stack             structures.Stack[Ability]
 	StackCard         *CardInstance   // the card that is resolving on the stack, if it exists
-	Waiting           []*CardInstance // where cards go until the end of the turn, where they are shuffled together and added to the bottom of the deck
+	Waiting           []*CardInstance // where cards go until the end of the turn, where they are shuffled together and added to the bottom of the deck; could also be a stack ig
 	ActivePlayerIndex int
 	Phase             *fsm.FSM // trigger phase changes with Phase.Event(...); things will be triggered appropriately
 }
@@ -72,6 +73,7 @@ func NewBoardState() BoardState {
 type Player struct {
 	Hand            []*CardInstance // will no longer include actively resolving card
 	PassPile        []*CardInstance
+	Triggers        map[Trigger][]Ability // the triggers that the player has queued up; fifo meaning they will be put on the stack in order from oldest to newest (resolving newest to oldest)
 	Health, Victory int
 	// will almost certainly need more things
 }

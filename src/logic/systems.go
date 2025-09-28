@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"math/rand"
+	"math/rand/v2"
 
 	"github.com/LWDaniels/Card-Game/src/constants"
 )
@@ -22,14 +22,14 @@ func removeCard(card *CardInstance, cardList []*CardInstance) []*CardInstance {
 func PlayCard(card *CardInstance, state *BoardState) {
 	// requires the stack to be empty before this is played
 	// clearing stack just in case
-	state.Stack = make([]Ability, 1)
+	state.Stack.Clear()
 
 	// remove card from hand or pass pile, whichever it happens to be in
 	state.Players[state.ActivePlayerIndex].Hand = removeCard(card, state.Players[state.ActivePlayerIndex].Hand)
 	state.Players[state.ActivePlayerIndex].PassPile = removeCard(card, state.Players[state.ActivePlayerIndex].PassPile)
 
 	// could factor into a function since it's also used in copying abilities, but that would require scope stuff
-	state.Stack = append(state.Stack,
+	state.Stack.PushBack(
 		Ability{Trigger: TriggerResolve,
 			BoundEffect: func() {
 				effect, ok := card.Preset.Effects[TriggerResolve]
@@ -42,29 +42,32 @@ func PlayCard(card *CardInstance, state *BoardState) {
 }
 
 func PopStack(state *BoardState) {
-	if len(state.Stack) == 0 {
-		return
+	ability := state.Stack.Pop()
+	if ability != nil {
+		ability.BoundEffect()
 	}
-
-	ability := state.Stack[len(state.Stack)-1]
-	state.Stack = state.Stack[:len(state.Stack)-1]
-	ability.BoundEffect()
 }
 
-// TODO: populate event listeners
 // only done when the stack is empty (to prevent this from being used on copies; this should only be used on real cards)
 func PostResolve(card *CardInstance, state *BoardState) {
 	state.StackCard = nil
 	state.Waiting = append(state.Waiting, card)
-	// populate event listeners :)
+	for t, e := range card.Preset.Effects {
+		state.Players[state.ActivePlayerIndex].Triggers[t] = append(state.Players[state.ActivePlayerIndex].Triggers[t],
+			Ability{Trigger: t, BoundEffect: func() {
+				e(state, state.ActivePlayerIndex, card)
+			}})
+	}
 }
 
 // maybe should rename since this is drawing from the deck, not rendering to screen
 // active player draws 1 card
 func Draw(state *BoardState) {
-	card := state.Deck[0] // assuming deck is never empty... maybe that's an incorrect assumption
-	state.Deck = state.Deck[1:]
-	state.Players[state.ActivePlayerIndex].Hand = append(state.Players[state.ActivePlayerIndex].Hand, card)
+	card := state.Deck.Pop()
+	if card == nil {
+		return
+	}
+	state.Players[state.ActivePlayerIndex].Hand = append(state.Players[state.ActivePlayerIndex].Hand, *card)
 	// TODO: trigger draw abilities
 }
 
@@ -80,9 +83,10 @@ func PlayPhaseEnd(state *BoardState) {
 
 	rand.Shuffle(len(state.Waiting), func(i, j int) {
 		state.Waiting[i], state.Waiting[j] = state.Waiting[j], state.Waiting[i]
-	}) // may need to change to be deterministic, idk
+	})
 
-	state.Deck = append(state.Deck, state.Waiting...)
+	state.Deck.PushListBack(state.Waiting)
+	state.Waiting = make([]*CardInstance, 0)
 }
 
 func PassPhaseBegin(state *BoardState) {

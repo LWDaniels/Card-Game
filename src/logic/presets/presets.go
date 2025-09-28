@@ -22,7 +22,7 @@ var (
 				effectedCard := state.StackCard
 				for range originalCard.Level {
 					if !effectedCard.Upgrade() {
-						state.Stack = append(state.Stack,
+						state.Stack.PushBack(
 							logic.Ability{Trigger: logic.TriggerResolve,
 								BoundEffect: func() {
 									effect, ok := effectedCard.Preset.Effects[logic.TriggerResolve]
