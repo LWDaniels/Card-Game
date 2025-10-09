@@ -44,8 +44,8 @@ var (
 		RequiresTarget: false,
 		Effects: map[logic.Trigger]logic.Effect{
 			logic.TriggerDraw: func(state *logic.BoardState, activePlayerIndex int, originalCard *logic.CardInstance) {
-				// TODO: effect to draw from deck (should be easy, but should have it as a function to make things easy)
-				// state.Players[activePlayerIndex].Hand
+				// note: trigger draw does nothing at the moment lol, so this won't work
+				logic.Draw(state, activePlayerIndex)
 			},
 		},
 	}

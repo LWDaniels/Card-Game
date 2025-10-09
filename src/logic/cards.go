@@ -20,10 +20,14 @@ type CardInstance struct {
 }
 
 func NewInstance(preset *CardPreset) *CardInstance {
+	t := TargetNone
+	if preset.RequiresTarget {
+		t = TargetLeft // TODO: oscillate between left and right
+	}
 	return &CardInstance{
 		Id:     constants.NextID(),
 		Level:  1,
-		Target: TargetNone, // will need random or oscillating targets for targeted cards in future
+		Target: t,
 		Preset: preset,
 	}
 }
@@ -35,14 +39,14 @@ func (ci *CardInstance) Upgrade() (couldUpgrade bool) {
 }
 
 // originalCard is always the card that caused this effect, not the card this may be effecting
-type Effect func(state *BoardState, casterIndex int, originalCard *CardInstance) // no idea what this should return
+type Effect func(state *BoardState, casterIndex int, originalCard *CardInstance) // no idea what this should return if anything
 
 type CardPreset struct {
 	Name           string
 	Text           string
 	RequiresTarget bool
 	Effects        map[Trigger]Effect // when a card resolves, it triggers its TriggerResolve effect, then populates the appropriate event listeners with the other effects
-	// Effects could also instead be an Ability[] list, idk
+	// Effects could also instead be an Ability[] list, but its fine as-is where it transforms ig
 }
 
 type Ability struct {

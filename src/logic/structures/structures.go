@@ -44,7 +44,8 @@ func (s *Stack[T]) CheckBack() *T {
 	if len(s.Contents) == 0 {
 		return nil
 	}
-	return &s.Contents[len(s.Contents)-1]
+	val := s.Contents[len(s.Contents)-1]
+	return &val
 }
 
 func (s *Stack[T]) Shuffle() {

@@ -51,15 +51,14 @@ func (bs *BoardState) EnterState(e *fsm.Event) {
 func (bs *BoardState) LeaveState(e *fsm.Event) {
 	switch e.Src {
 	case PhaseStart:
-		// StartGame() // TODO
+		StartGame(bs) // handles initialization
 	case PhasePass:
 	case PhasePlay:
 		PlayPhaseEnd(bs)
 	}
 }
 
-func NewBoardState() BoardState {
-	// TODO: do non-fsm initialization
+func NewBoardState() BoardState { // maybe need to add cards as a param?
 	bs := BoardState{}
 
 	bs.Phase = fsm.NewFSM(PhaseStart, BoardEvents,

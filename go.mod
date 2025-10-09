@@ -4,6 +4,7 @@ go 1.24.3
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.8.8
+	github.com/looplab/fsm v1.0.3
 	github.com/yohamta/donburi v1.15.7
 )
 
@@ -12,7 +13,6 @@ require (
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
-	github.com/looplab/fsm v1.0.3 // indirect
 	golang.org/x/image v0.25.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect

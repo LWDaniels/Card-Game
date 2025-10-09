@@ -62,13 +62,12 @@ func PostResolve(card *CardInstance, state *BoardState) {
 
 // maybe should rename since this is drawing from the deck, not rendering to screen
 // active player draws 1 card
-func Draw(state *BoardState) {
+func Draw(state *BoardState, playerIndex int) {
 	card := state.Deck.Pop()
 	if card == nil {
 		return
 	}
-	state.Players[state.ActivePlayerIndex].Hand = append(state.Players[state.ActivePlayerIndex].Hand, *card)
-	// TODO: trigger draw abilities
+	state.Players[state.ActivePlayerIndex].Hand = append(state.Players[playerIndex].Hand, *card)
 }
 
 // shuffles all hands/pass-piles into Waiting and puts it on the bottom of the deck
@@ -78,7 +77,7 @@ func PlayPhaseEnd(state *BoardState) {
 		state.Players[i].Hand = make([]*CardInstance, 0)
 		state.Waiting = append(state.Waiting, state.Players[i].PassPile...)
 		state.Players[i].PassPile = make([]*CardInstance, 0)
-		// maybe can trigger some stuff here?
+		// maybe can trigger some stuff here? in which case order does matter
 	}
 
 	rand.Shuffle(len(state.Waiting), func(i, j int) {
@@ -98,10 +97,14 @@ func PassPhaseBegin(state *BoardState) {
 	for range constants.CardsInHand {
 		for i := range state.Players { // idk if first draw should rotate or what
 			state.ActivePlayerIndex = i
-			Draw(state)
+			Draw(state, state.ActivePlayerIndex)
 		}
 	}
 	// leaves the active player index on the last player; change if desired
+}
+
+func StartGame(state *BoardState) {
+	// TODO: init game (generate deck mostly)
 }
 
 /*
