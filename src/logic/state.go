@@ -22,6 +22,7 @@ const (
 )
 
 var BoardEvents = fsm.Events{ // will prob need lots of changes
+	// start -> pass -> play -> end
 	{Name: EventStart, Src: []string{PhaseStart}, Dst: PhasePass},
 	{Name: EventEnterPlay, Src: []string{PhasePass}, Dst: PhasePlay},
 	{Name: EventEnterPass, Src: []string{PhasePlay}, Dst: PhasePass},

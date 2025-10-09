@@ -9,6 +9,7 @@ const (
 	DefaultHealth              = 5
 	VictoryPointsToWin         = 3 // not sure if I should have these
 	CardsInHand                = 5
+	UpgradesPerTurn            = 3
 )
 
 func WorldWidth() int {

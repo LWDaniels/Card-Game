@@ -3,19 +3,19 @@ package structures
 import "math/rand"
 
 type Stack[T any] struct { // last in, first out
-	contents []T
+	Contents []T
 }
 
 func (s *Stack[T]) ToSlice() []T { // copy of the internal slice
-	return append(make([]T, 0), s.contents...)
+	return append(make([]T, 0), s.Contents...)
 }
 
 func (s *Stack[T]) Clear() {
-	s.contents = make([]T, 0)
+	s.Contents = make([]T, 0)
 }
 
 func (s *Stack[T]) Size() int {
-	return len(s.contents)
+	return len(s.Contents)
 }
 
 /*
@@ -27,28 +27,28 @@ func (s *Stack[T]) Pop() *T {
 	if front == nil {
 		return nil
 	}
-	s.contents = s.contents[:len(s.contents)-1]
+	s.Contents = s.Contents[:len(s.Contents)-1]
 	return front
 }
 
 func (s *Stack[T]) PushBack(item T) {
-	s.contents = append(s.contents, item)
+	s.Contents = append(s.Contents, item)
 }
 
 func (s *Stack[T]) PushListBack(items []T) {
-	s.contents = append(s.contents, items...)
+	s.Contents = append(s.Contents, items...)
 }
 
 // nil if empty
 func (s *Stack[T]) CheckBack() *T {
-	if len(s.contents) == 0 {
+	if len(s.Contents) == 0 {
 		return nil
 	}
-	return &s.contents[len(s.contents)-1]
+	return &s.Contents[len(s.Contents)-1]
 }
 
 func (s *Stack[T]) Shuffle() {
-	rand.Shuffle(len(s.contents), func(i, j int) {
-		s.contents[i], s.contents[j] = s.contents[j], s.contents[i]
+	rand.Shuffle(len(s.Contents), func(i, j int) {
+		s.Contents[i], s.Contents[j] = s.Contents[j], s.Contents[i]
 	}) // may need to change to be deterministic, idk
 }

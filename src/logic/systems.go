@@ -89,7 +89,11 @@ func PlayPhaseEnd(state *BoardState) {
 	state.Waiting = make([]*CardInstance, 0)
 }
 
+// upgrades cards and passes out hands
 func PassPhaseBegin(state *BoardState) {
+	for range constants.UpgradesPerTurn {
+		state.Deck.Contents[rand.N(state.Deck.Size())].Upgrade() // not handling the case of upgrading something that's fully upgraded; if that happens it happens rn
+	}
 	// assumes all hands/pass-piles are empty, waiting is empty, stack is empty, and deck is full
 	for range constants.CardsInHand {
 		for i := range state.Players { // idk if first draw should rotate or what
@@ -105,6 +109,5 @@ TODO:
 - EVERYTHING about the passing phase
 - Add larger game loop that progresses from phase to phase, triggering these systems at the right times (and changing active player and such)
 - Add deck generation (make the deck at the start of the game based on the pool of cards)
-- Add deck random upgrades (not sure if it should be 5 different random cards per round or 5 upgrades... or a diff number)
 - Actually integrate stuff nto game logic
 */
