@@ -1,7 +1,9 @@
 ## A Secret Role Card Game (or... it will be)
 
 This project came to be as an opportunity for me to work on a solo game and to learn Go (which I've grown to like... mostly. I wish there were enums lol).
+
 I technically first came up with this idea as a game for my university mobile game development class, but we ended up moving forward with a different idea that was maybe better (and that turned into _Apathia_).
+
 I also figured I need more public examples of my code, so here you are! The code is a bit messy (WIP!!!), but I hope it demonstrates my abilities to tackle difficult problems and write complex, robust systems.
 
 As of now, this is very much a work in progress (when writing this, I am just finishing off the main mechanical loop for the first real prototype).
@@ -49,4 +51,5 @@ As of now, this is very much a work in progress (when writing this, I am just fi
 ----------------------------------
 
 Some magic the gathering card arts are used as placeholder art. This is intended to be temporary, and thus will be removed as soon as the game is at all playable. Until that moment, the art is used under WOTC fan content policy: https://company.wizards.com/en/legal/fancontentpolicy.
+
 If there is any issue regarding copyright or any other matter, do not hesitate to reach out to me.
