@@ -7,6 +7,7 @@ import (
 	"github.com/LWDaniels/Card-Game/assets/textures"
 	"github.com/LWDaniels/Card-Game/src/archetypes"
 	"github.com/LWDaniels/Card-Game/src/components"
+	"github.com/LWDaniels/Card-Game/src/logic"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/features/math"
@@ -33,14 +34,14 @@ func CreateZone(w donburi.World, topLeft math.Vec2, size image.Point) *donburi.E
 	return zone
 }
 
-func CreateCard(w donburi.World, pos math.Vec2) *donburi.Entry {
+func CreateCard(w donburi.World, pos math.Vec2, instance *logic.CardInstance) *donburi.Entry {
 	card := archetypes.Card.Spawn(w)
 	components.InitTransform(card, math.NewVec2(1, 1), 0, pos)
 	children, _ := transform.GetChildren(card)
 	child := children[0] // only one child upon creation
-	components.InitCard(card, child)
+	components.InitCard(card, child, instance)
 
-	im := assets.GetTexture(textures.BlackLotus)
+	im := assets.GetTexture(instance.Preset.Texture) // should change based on card
 	components.InitSprite(child, im)
 	scale := math.NewVec2(.12, .12)
 	components.InitTransform(child, scale,

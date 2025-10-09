@@ -41,8 +41,6 @@ func GetGeoM(e *donburi.Entry) ebiten.GeoM {
 
 	if parent, ok := transform.GetParent(e); ok {
 		g.Concat(GetGeoM(parent))
-		return g
-	} else {
-		return g
 	}
+	return g
 }

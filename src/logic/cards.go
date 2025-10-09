@@ -1,6 +1,9 @@
 package logic
 
-import "github.com/LWDaniels/Card-Game/src/constants"
+import (
+	"github.com/LWDaniels/Card-Game/assets/textures"
+	"github.com/LWDaniels/Card-Game/src/constants"
+)
 
 type CardTarget uint // could redo to be a *bool if needed
 
@@ -47,6 +50,7 @@ type CardPreset struct {
 	RequiresTarget bool
 	Effects        map[Trigger]Effect // when a card resolves, it triggers its TriggerResolve effect, then populates the appropriate event listeners with the other effects
 	// Effects could also instead be an Ability[] list, but its fine as-is where it transforms ig
+	Texture textures.TextureKey
 }
 
 type Ability struct {

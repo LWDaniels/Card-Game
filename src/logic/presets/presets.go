@@ -1,6 +1,9 @@
 package presets
 
-import "github.com/LWDaniels/Card-Game/src/logic"
+import (
+	"github.com/LWDaniels/Card-Game/assets/textures"
+	"github.com/LWDaniels/Card-Game/src/logic"
+)
 
 var (
 	Dagger = logic.CardPreset{
@@ -12,6 +15,7 @@ var (
 				state.Players[casterIndex].Health -= originalCard.Level
 			},
 		},
+		Texture: textures.Sting,
 	}
 	Upgrade = logic.CardPreset{
 		Name:           "Upgrade",
@@ -37,6 +41,7 @@ var (
 				}
 			},
 		},
+		Texture: textures.Leveler,
 	}
 	Seed = logic.CardPreset{
 		Name:           "Seed",
@@ -48,5 +53,6 @@ var (
 				logic.Draw(state, activePlayerIndex)
 			},
 		},
+		Texture: textures.AncestralRecall,
 	}
 )

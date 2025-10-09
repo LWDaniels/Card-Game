@@ -19,6 +19,9 @@ const (
 	StartRead TextureKey = iota
 	Gopher
 	BlackLotus
+	AncestralRecall
+	Leveler
+	Sting
 	Border
 	// DO NOT USE
 	StopRead
@@ -29,13 +32,22 @@ var (
 	//go:embed gopher.png
 	gopher_png []byte
 	//go:embed black-lotus.jpg
-	blackLotus_png []byte
+	blackLotus_jpg []byte
 	//go:embed border.png
 	border_png []byte
+	//go:embed ancestral-recall.png
+	ancestralRecall_png []byte
+	//go:embed leveler.png
+	leveler_png []byte
+	//go:embed sting.png
+	sting_png []byte
 )
 
 var TextureBytes = map[TextureKey][]byte{
-	Gopher:     gopher_png,
-	BlackLotus: blackLotus_png,
-	Border:     border_png,
+	Gopher:          gopher_png,
+	BlackLotus:      blackLotus_jpg,
+	Border:          border_png,
+	AncestralRecall: ancestralRecall_png,
+	Leveler:         leveler_png,
+	Sting:           sting_png,
 }

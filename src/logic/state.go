@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"github.com/LWDaniels/Card-Game/src/constants"
 	"github.com/LWDaniels/Card-Game/src/logic/structures"
 	"github.com/looplab/fsm"
 )
@@ -58,7 +59,7 @@ func (bs *BoardState) LeaveState(e *fsm.Event) {
 	}
 }
 
-func NewBoardState() BoardState { // maybe need to add cards as a param?
+func NewBoardState() *BoardState { // maybe need to add cards as a param?
 	bs := BoardState{}
 
 	bs.Phase = fsm.NewFSM(PhaseStart, BoardEvents,
@@ -67,7 +68,11 @@ func NewBoardState() BoardState { // maybe need to add cards as a param?
 			"leave_state": func(_ context.Context, e *fsm.Event) { bs.LeaveState(e) },
 		}, // can also do special stuff on specific transitions if needed; for now I am just handling enter/exit as they are tho
 	)
-	return bs
+
+	for range 4 { // just doing 4 players as a magic number for now
+		bs.Players = append(bs.Players, Player{Health: constants.DefaultHealth}) // could use a NewPlayer() func prob
+	}
+	return &bs
 }
 
 type Player struct {
