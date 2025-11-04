@@ -8,6 +8,8 @@ import (
 	"github.com/LWDaniels/Card-Game/src/components"
 	"github.com/LWDaniels/Card-Game/src/constants"
 	"github.com/LWDaniels/Card-Game/src/logic"
+	"github.com/LWDaniels/Card-Game/src/logic/presets"
+	"github.com/LWDaniels/Card-Game/src/logic/structures"
 	"github.com/LWDaniels/Card-Game/src/procedures"
 	"github.com/LWDaniels/Card-Game/src/utils"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -39,7 +41,31 @@ func NewGameScene() *GameScene {
 	factory.CreateZone(g.World, math.NewVec2(10, 120), image.Pt(100, 300))
 	factory.CreateZone(g.World, math.NewVec2(float64(constants.WorldWidth()-110), 120), image.Pt(100, 300))
 
+	// actually need to generate the deck here(ish) since I can't do it within logic
+	g.GenerateDeck()
+	// now need to start the game...
 	return g
+}
+
+func (g *GameScene) GenerateDeck() {
+	deck := structures.Stack[*logic.CardInstance]{}
+	for _, item := range presets.DeckList {
+		t := logic.TargetNone
+		if item.Card.RequiresTarget {
+			t = logic.TargetLeft
+		}
+		for range item.Count {
+			deck.PushBack(logic.NewInstance(item.Card, t))
+			// oscillate target directions
+			if t == logic.TargetNone {
+				continue
+			} else if t == logic.TargetLeft {
+				t = logic.TargetRight
+			} else if t == logic.TargetRight {
+				t = logic.TargetLeft
+			}
+		}
+	}
 }
 
 var zoneQuery = donburi.NewQuery(filter.Contains(tags.Zone))

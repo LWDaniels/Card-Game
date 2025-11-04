@@ -104,7 +104,7 @@ func PassPhaseBegin(state *BoardState) {
 }
 
 func StartGame(state *BoardState) {
-	// TODO: init game (generate deck mostly)
+	// cannot actually generate deck here (needs to be fed in from outside), so not 100% sure where it should be done
 }
 
 /*

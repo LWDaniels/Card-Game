@@ -10,6 +10,7 @@ const (
 	VictoryPointsToWin         = 3 // not sure if I should have these
 	CardsInHand                = 5
 	UpgradesPerTurn            = 3
+	CardsInDeck                = 30
 )
 
 func WorldWidth() int {

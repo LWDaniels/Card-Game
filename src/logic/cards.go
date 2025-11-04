@@ -22,15 +22,11 @@ type CardInstance struct {
 	// may need a modifications list
 }
 
-func NewInstance(preset *CardPreset) *CardInstance {
-	t := TargetNone
-	if preset.RequiresTarget {
-		t = TargetLeft // TODO: oscillate between left and right
-	}
+func NewInstance(preset *CardPreset, target CardTarget) *CardInstance {
 	return &CardInstance{
 		Id:     constants.NextID(),
 		Level:  1,
-		Target: t,
+		Target: target,
 		Preset: preset,
 	}
 }
