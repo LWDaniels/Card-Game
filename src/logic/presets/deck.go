@@ -2,7 +2,7 @@ package presets
 
 import "github.com/LWDaniels/Card-Game/src/logic"
 
-type Listing struct {
+type Listing struct { // could instead do map[*logic.CardPreset]int
 	Card  *logic.CardPreset
 	Count int
 }

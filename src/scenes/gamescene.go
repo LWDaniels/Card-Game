@@ -29,25 +29,19 @@ type GameScene struct {
 }
 
 func NewGameScene() *GameScene {
-	g := &GameScene{donburi.NewWorld(), make([]*donburi.Entry, 0), nil, nil, logic.NewBoardState()}
-	// for range startingCards {
-	// 	c := factory.CreateCard(g.World, math.NewVec2(float64(constants.WorldWidth()/2),
-	// 		float64(constants.WorldHeight()/2)))
-	// 	g.Hand = append(g.Hand, c)
-	// }
+	g := &GameScene{donburi.NewWorld(), make([]*donburi.Entry, 0), nil, nil, logic.NewBoardState(GenerateDeck())}
 
 	// prob want a method for this
 	factory.CreateZone(g.World, math.NewVec2(10, 10), image.Pt(constants.WorldWidth()-20, 100))
 	factory.CreateZone(g.World, math.NewVec2(10, 120), image.Pt(100, 300))
 	factory.CreateZone(g.World, math.NewVec2(float64(constants.WorldWidth()-110), 120), image.Pt(100, 300))
 
-	// actually need to generate the deck here(ish) since I can't do it within logic
-	g.GenerateDeck()
-	// now need to start the game...
+	// could start the game after a prompt if needed
+	g.State.Transition(logic.EventStart)
 	return g
 }
 
-func (g *GameScene) GenerateDeck() {
+func GenerateDeck() structures.Stack[*logic.CardInstance] {
 	deck := structures.Stack[*logic.CardInstance]{}
 	for _, item := range presets.DeckList {
 		t := logic.TargetNone
@@ -66,6 +60,7 @@ func (g *GameScene) GenerateDeck() {
 			}
 		}
 	}
+	return deck
 }
 
 var zoneQuery = donburi.NewQuery(filter.Contains(tags.Zone))
@@ -80,14 +75,16 @@ func (g *GameScene) ManageZone() {
 	})
 }
 
-func (g *GameScene) PassCard(card *donburi.Entry) {
-	if g.State.ActivePlayerIndex != 0 || !g.State.Phase.Is(logic.PhasePass) { // maybe need to keep track of index?
+func (g *GameScene) PassCard(card *donburi.Entry) { // TODO: pass in target player index
+	if !g.State.Phase.Is(logic.PhasePass) {
 		return
 	}
 
 	acc := make([]*donburi.Entry, 0)
 	for _, e := range g.Hand {
 		if card.Id() == e.Id() {
+			data := components.Card.Get(e)
+			logic.PassCard(g.State, 0, 1, data.Instance)
 			continue
 		}
 		acc = append(acc, e)

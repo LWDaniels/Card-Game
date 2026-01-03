@@ -100,11 +100,16 @@ func PassPhaseBegin(state *BoardState) {
 			Draw(state, state.ActivePlayerIndex)
 		}
 	}
-	// leaves the active player index on the last player; change if desired
+	state.ActivePlayerIndex = 0 // may want to rotate the starting player, idk
+}
+
+func PassCard(state *BoardState, sourcePlayerIndex, destPlayerIndex int, card *CardInstance) {
+	// TODO: remove card from hand of source, put in pass pile of dest
 }
 
 func StartGame(state *BoardState) {
-	// cannot actually generate deck here (needs to be fed in from outside), so not 100% sure where it should be done
+	// deck is generated elsewhere
+	// so far, this does nothing, but in theory stuff can be done here :)
 }
 
 /*

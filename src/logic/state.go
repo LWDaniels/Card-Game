@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/LWDaniels/Card-Game/src/constants"
 	"github.com/LWDaniels/Card-Game/src/logic/structures"
@@ -40,27 +41,39 @@ type BoardState struct {
 	Phase             *fsm.FSM // trigger phase changes with Phase.Event(...); things will be triggered appropriately
 }
 
+func (bs *BoardState) Transition(event string) {
+	err := bs.Phase.Event(context.Background(), event)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// a callback; not to be used really (could make private but w/e)
 func (bs *BoardState) EnterState(e *fsm.Event) {
+	fmt.Println("enter ", e.Dst)
 	switch e.Dst {
 	case PhasePass:
+		PassPhaseBegin(bs)
 	case PhasePlay:
 	case PhaseEnd:
 		//TODO
 	}
 }
 
+// a callback; not to be used really (could make private but w/e)
 func (bs *BoardState) LeaveState(e *fsm.Event) {
+	fmt.Println("leave ", e.Src)
 	switch e.Src {
 	case PhaseStart:
-		StartGame(bs) // handles initialization
+		StartGame(bs) // handles initialization... eventually
 	case PhasePass:
 	case PhasePlay:
 		PlayPhaseEnd(bs)
 	}
 }
 
-func NewBoardState() *BoardState { // maybe need to add cards as a param?
-	bs := BoardState{}
+func NewBoardState(startingDeck structures.Stack[*CardInstance]) *BoardState {
+	bs := BoardState{Deck: startingDeck}
 
 	bs.Phase = fsm.NewFSM(PhaseStart, BoardEvents,
 		fsm.Callbacks{

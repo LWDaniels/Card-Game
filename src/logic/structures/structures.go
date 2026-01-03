@@ -19,8 +19,8 @@ func (s *Stack[T]) Size() int {
 }
 
 /*
-Returns nil if q is empty
-Otherwise returns the last element of q and removes it
+Returns nil if s is empty
+Otherwise returns the last element of s and removes it
 */
 func (s *Stack[T]) Pop() *T {
 	front := s.CheckBack()
