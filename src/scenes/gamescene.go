@@ -22,7 +22,7 @@ import (
 
 type GameScene struct {
 	World       donburi.World
-	Hand        []*donburi.Entry
+	Hand        []*donburi.Entry // should not be updated directly; instead use Sync(...) below
 	HoveredZone *donburi.Entry
 	HeldCard    *donburi.Entry
 	State       *logic.BoardState
@@ -80,44 +80,42 @@ func (g *GameScene) PassCard(card *donburi.Entry) { // TODO: pass in target play
 		return
 	}
 
-	acc := make([]*donburi.Entry, 0)
-	for _, e := range g.Hand {
-		if card.Id() == e.Id() {
-			data := components.Card.Get(e)
-			logic.PassCard(g.State, 0, 1, data.Instance)
-			continue
-		}
-		acc = append(acc, e)
-	}
-	g.Hand = acc
-	transform.RemoveRecursive(card)
+	c := components.Card.Get(card)
+	logic.PassCard(g.State, 0, 1 /*TODO: target properly*/, c.Instance)
+	g.Hand = g.CardsToEntries(g.Hand, g.State.Players[0].Hand)
+	transform.RemoveRecursive(card) // can remove this once I update CardsToEntries
 }
 
 var cardQuery = donburi.NewQuery(filter.Contains(components.Card))
 
-func (g *GameScene) ManageHand() {
-	newCards := make([]*logic.CardInstance, 0)
-	// detecting new cards; makes use of the fact that cards are added to the back of the hand only
-	// would be easier to trigger off of draw, but drawing and logic are pretty much completely separated rn (not sure if that's great)
-	for i := len(g.State.Players[0].Hand) - 1; i >= 0; i-- { // may need to change off 0-index
-		c := g.State.Players[0].Hand[i]
+/*
+Returns a slice of entries representing [cards].
+Reuses entries from [prevEntries] whenever possible
+(can just use nil if you want a brand new hand; be wary of duplicates ofc)
+*/
+func (g *GameScene) CardsToEntries(prevEntries []*donburi.Entry, cards []*logic.CardInstance) []*donburi.Entry {
+	// not super efficient; may be better to make events to update card by card? or maybe to make hands a map...
+	newEntries := make([]*donburi.Entry, len(cards))
+
+	for i, cardInstance := range cards {
 		found := false
-		for _, entry := range g.Hand {
-			if components.Card.Get(entry).Instance.Id == c.Id {
+		for _, entry := range prevEntries {
+			if components.Card.Get(entry).Instance.Id == cardInstance.Id {
 				found = true
+				newEntries[i] = entry
 				break
 			}
 		}
-		if found {
-			break
+		if !found {
+			newEntries[i] = factory.CreateCard(g.World, SlotPos(i, len(cards)), cardInstance)
 		}
-		// not found, so we can are sure that c is a new card
-		newCards = append(newCards, c)
 	}
-	for i, c := range newCards {
-		card := factory.CreateCard(g.World, SlotPos(len(g.Hand)+i, len(g.Hand)+len(newCards)), c)
-		g.Hand = append(g.Hand, card)
-	}
+	// TODO: remove entries that arent in the new list from transform
+	return newEntries
+}
+
+func (g *GameScene) ManageHand() {
+	g.Hand = g.CardsToEntries(g.Hand, g.State.Players[0].Hand)
 
 	// gather held card
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {

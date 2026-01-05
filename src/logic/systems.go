@@ -104,7 +104,16 @@ func PassPhaseBegin(state *BoardState) {
 }
 
 func PassCard(state *BoardState, sourcePlayerIndex, destPlayerIndex int, card *CardInstance) {
-	// TODO: remove card from hand of source, put in pass pile of dest
+	newHand := make([]*CardInstance, 0)
+	for _, x := range state.Players[sourcePlayerIndex].Hand {
+		if x.Id == card.Id {
+			continue
+		}
+		newHand = append(newHand, x)
+	}
+	state.Players[sourcePlayerIndex].Hand = newHand
+
+	state.Players[destPlayerIndex].PassPile = append(state.Players[destPlayerIndex].PassPile, card)
 }
 
 func StartGame(state *BoardState) {
